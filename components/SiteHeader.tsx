@@ -1,7 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import {
+  Suspense,
+  useEffect,
+  useMemo,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type HeaderCategory = {
@@ -124,7 +131,7 @@ function GlassButton({
   ariaLabel,
 }: {
   href: string;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   onClick?: () => void;
   ariaLabel?: string;
@@ -151,7 +158,7 @@ function DarkButton({
   onClick,
 }: {
   href: string;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   onClick?: () => void;
 }) {
@@ -182,7 +189,7 @@ function NavPill({
   active?: boolean;
   dark?: boolean;
   onClick?: () => void;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
 }) {
   if (dark) {
     return (
@@ -306,6 +313,14 @@ function CartButton({
 }
 
 export default function SiteHeader() {
+  return (
+    <Suspense fallback={null}>
+      <SiteHeaderInner />
+    </Suspense>
+  );
+}
+
+function SiteHeaderInner() {
   const pathname = usePathname();
   const router = useRouter();
   const sp = useSearchParams();
@@ -427,7 +442,7 @@ export default function SiteHeader() {
 
   const visibleCategories = useMemo(() => categories.slice(0, 10), [categories]);
 
-  const onSubmitSearch = (e: React.FormEvent) => {
+  const onSubmitSearch = (e: FormEvent) => {
     e.preventDefault();
     const q = search.trim();
     const params = new URLSearchParams();
